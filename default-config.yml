@@ -1,0 +1,4 @@
+checker_dir: sanity/checkers
+file_checker_associations:
+  - ^.*\.txt$:
+    - ".*checker"
