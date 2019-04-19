@@ -14,9 +14,10 @@ import sanity.config
 import sanity.checker
 
 DESCRIPTION = "Perform a number of quick sanity checks on a directory of assets"
+TAB_WIDTH = 4
 
 def print_depth(msg, depth=0):
-    depth_str = "\t" * depth
+    depth_str = " " * TAB_WIDTH * depth
     print(depth_str + msg)
 
 def exit_app(code, msg=""):
