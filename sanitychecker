@@ -8,7 +8,7 @@ Author:
 
 import argparse
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, exists
 
 import sanity.config
 import sanity.checker
@@ -44,12 +44,14 @@ if __name__ == "__main__":
                         " to './default-config.yml'")
     args = parser.parse_args()
     
+    # try to load the config file given
     conf = None
     try:
         conf = sanity.config.parse_config(args.config)
     except sanity.config.ConfigError as exc:
         exit_app(1, f"ERROR: Could not load config, {str(exc)}")
 
+    # try and load the checker modules from the directory in the loaded config
     checkers = None
     try:
         checkers = sanity.checker.load_checker_modules(conf.checker_dir)
@@ -58,7 +60,13 @@ if __name__ == "__main__":
     except ImportError as exc:
         exit_app(1, f"ERROR: Could not load module, {str(exc)}")
 
+    # check to see if specified asset directory exists
+    if not exists(args.directory):
+        exit_app(1, f"ERROR: Specified assets directory '{args.directory}' did not exist")
+
+    # get the asset files we want to check
     files_in_dir = [f for f in listdir(args.directory) if isfile(join(args.directory, f))]
     
+    # for all of the given file associations, run the associated checks
     for association_name, association in conf.associations.items():
         process_association(association_name, association, files_in_dir, checkers)
