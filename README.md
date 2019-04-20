@@ -26,17 +26,50 @@ $ python sanitychecker [-c CONFIG] directory
 ```
 
 ## Config
-- `checker_dir`: Path to the directory containing checkers. (REQUIRED)
-- `file_checker_associations`: Regexes of filenames and an array of checker names to run against them. Checker names can be regexes. If this is not specified, every checker will run against every file in `checker_dir`.
+Each entry here provides the name of the config value, whether or not it is required, and a short example of how it can be used.
+### `checker_dir`
+**(REQUIRED)** Path to the directory containing checkers. The example shown here will load all `.py` modules contained in the `~/sanity_checks` directory.
+```yaml
+checker_dir: "~/sanity_checks" 
+```
+### `file_checker_associations`
+**(OPTIONAL)** Regexes of filenames and an array of checker names to run against them. Checker names can be regexes. If this is not specified, every checker will run against every file in `checker_dir`. The example shown here will process every `.txt` file in the given directory with checkers ending in the string `"checker"`.
+```yaml
+file_checker_associations:
+    ^.*\.txt$:
+        - "^.*checker$"
+```
+The default value for this config processes all files with all checkers, and is equivalent to:
+```yaml
+file_checker_associations:
+    ^.*$:
+        - "^.*$"
+```
+### `directory_checks`
+**(OPTIONAL)** Provides a list of checker name regexes to run on the specified directory.
+### `parameters`
+**(OPTIONAL)** Checkers can use parameterised using this value in the config. It maps variable names to values. The example shown here will set the `filename_pattern` parameter of checker '`filenamechecker.py`' to be equal to `"^.*-asset-.*$"`, indicating that it should only accept filenames that contain the string `"-asset-"`.
+```yaml
+parameters:
+    filenamechecker:
+        filename_pattern: "^.*-asset-.*$"
+```
+If this isn't specified then no parameters in the checkers will be set. It's equivalent to this value in the config file:
+```yaml
+parameters: {}
+```
+This means it's always recommended to provide sensible default values for any parameters used in checkers, as you don't know whether or not people will decide to not parameterise any of them.
+
+## Writing a checker
 
 ## Todo
-- Make more file rules to demo
 - Directory rules for processing files in a directory
 - Refactor out functionality from sanitychecker to sanity.checker
 - Make it really reusable
-- Parameterise variables in checkers?
-    - For example a file size limit checker could have the max file size set in the YAML config
 - Create an alternate config to demo utility of other configs
+- Recursive check (configurable in config)
+- Ability to combine checks into one check (like combining unit test cases)
+- Make more file rules to demo
 - Create advanced checkers, like an OBJ loader or something... (vertex count?)
     - JSON checker (JSON schema?)
     - YAML checker
@@ -46,8 +79,5 @@ $ python sanitychecker [-c CONFIG] directory
     - GLSL/HLSL
     - Pylint
     - Texture dimensions
-- Recursive check (configurable in config)
-- Checks should return a reason for failing
-- Ability to combine checks into one check (like combining unit test cases)
 - Write documentation for everything
 - Update the README to be a guide how to use

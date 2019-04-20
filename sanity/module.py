@@ -14,7 +14,7 @@ IGNORE_MODULE_NAMES = [
 ]
 """File names to be ignored when loading modules from a directory."""
 
-DESIRED_CHECK_ARGSPEC = inspect.ArgSpec(args=['file_path'], varargs=None, keywords=None, defaults=None)
+DESIRED_CHECK_ARGSPEC = inspect.ArgSpec(args=['path', 'params'], varargs=None, keywords=None, defaults=None)
 """The desired signature of a check() function in a checker module."""
 
 def validate_checker_function(checker_func):

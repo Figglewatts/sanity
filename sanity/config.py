@@ -8,6 +8,13 @@ REQUIRED_KEYS = [
 DEFAULT_ASSOCIATION = [
     {"^.*$": ["^.*$"]}
 ]
+"""Used if no associations are given. Runs all checkers for all files."""
+
+DEFAULT_PARAMETERS = {}
+"""Used if no parameters are given. Doesn't set anything."""
+
+DEFAULT_DIRECTORY_CHECKS = []
+"""Used if no checks are given. Doesn't run any checks on the directory."""
 
 class Config:
     """Config stores parsed values from the config YAML file.
@@ -17,18 +24,20 @@ class Config:
 
     Attributes:
         checker_dir (str): The directory of checker modules to use.
-        associations (arr[dict[str, arr[str]]]): Associations between filenames
+        file_associations (arr[dict[str, arr[str]]]): Associations between filenames
             and checkers to run against them. An array of dicts mapping filenames to
             names of checkers to run against this filename. Supports regexes for
             both filenames and checker names, simply enclose regex in '^' and '$'.
+        checker_params (dict): Allows variables in checkers to be set. Maps
+            names of checkers to values to pass into their checker function.
+        directory_checks (arr[str]): An array of checker name regexes to run on
+            the entire directory as opposed to individual files.
     """
     def __init__(self, config_yaml):
         self.checker_dir = config_yaml["checker_dir"]
-        associations = config_yaml.get("file_checker_associations", DEFAULT_ASSOCIATION)
-        try:
-            self.associations = sanity.associations.compile_associations(associations)
-        except sanity.associations.AssociationError as exc:
-            raise ConfigError("Unable to load associations:", exc)
+        self.file_associations = config_yaml.get("file_checker_associations", DEFAULT_ASSOCIATION)
+        self.checker_params = config_yaml.get("parameters", DEFAULT_PARAMETERS)
+        self.dir_associations = config_yaml.get("directory_checks", DEFAULT_DIRECTORY_CHECKS)
             
 
 class ConfigError(Exception):

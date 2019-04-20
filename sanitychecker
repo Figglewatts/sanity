@@ -7,34 +7,16 @@ Author:
 """
 
 import argparse
-from os import listdir
-from os.path import isfile, join, exists
+from os.path import exists
 
 import sanity.config
-import sanity.checker
+import sanity.module
 
 DESCRIPTION = "Perform a number of quick sanity checks on a directory of assets"
-TAB_WIDTH = 4
-
-def print_depth(msg, depth=0):
-    depth_str = " " * TAB_WIDTH * depth
-    print(depth_str + msg)
 
 def exit_app(code, msg=""):
     print(msg)
     raise SystemExit(code)
-
-def run_check(check_func, file_name, checker_name):
-    result = check_func(file_name)
-    result_str = "PASS" if result else "FAIL"
-    print_depth(f"[{result_str}] - {checker_name} on {file_name}", 1)
-
-def process_association(association_name, association, files, checkers):
-    print_depth(f"Processing association: '{association_name}'")
-    for file in sanity.associations.filter_files(files, association.file_name):
-        for checker_regex in association.checker_names:
-            for checker_name, checker_func in sanity.associations.filter_checkers(checkers, checker_regex):
-                run_check(checker_func, file, checker_name)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=DESCRIPTION)
@@ -44,6 +26,10 @@ if __name__ == "__main__":
                         help="The YAML config file to use for this check. Defaults"
                         " to './default-config.yml'")
     args = parser.parse_args()
+
+    # check to see if specified asset directory exists
+    if not exists(args.directory):
+        exit_app(1, f"ERROR: Specified assets directory '{args.directory}' did not exist")
     
     # try to load the config file given
     conf = None
@@ -52,22 +38,11 @@ if __name__ == "__main__":
     except sanity.config.ConfigError as exc:
         exit_app(1, f"ERROR: Could not load config, {str(exc)}")
 
-    # try and load the checker modules from the directory in the loaded config
-    checkers = None
+    # try to create a sanity checker context
+    sanity_ctx = None
     try:
-        checkers = sanity.checker.load_checker_modules(conf.checker_dir)
-    except ValueError as exc:
-        exit_app(1, f"ERROR: Could not load checker modules, {str(exc)}")
-    except ImportError as exc:
-        exit_app(1, f"ERROR: Could not load module, {str(exc)}")
+        sanity_ctx = sanity.CheckerContext(conf, args.directory)
+    except sanity.ContextCreationError as exc:
+        exit_app(1, f"ERROR: Unable to create context, {str(exc)}")
 
-    # check to see if specified asset directory exists
-    if not exists(args.directory):
-        exit_app(1, f"ERROR: Specified assets directory '{args.directory}' did not exist")
-
-    # get the asset files we want to check
-    files_in_dir = [f for f in listdir(args.directory) if isfile(join(args.directory, f))]
-    
-    # for all of the given file associations, run the associated checks
-    for association_name, association in conf.associations.items():
-        process_association(association_name, association, files_in_dir, checkers)
+    sanity.check(sanity_ctx)

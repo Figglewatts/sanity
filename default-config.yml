@@ -1,4 +1,11 @@
 checker_dir: sanity/checkers
 file_checker_associations:
-  - ^.*\.txt$:
-    - ".*checker"
+  ^.*\.txt$:
+    - "^file_.*$"
+directory_checks:
+  - "^dir_.*$"
+parameters:
+  file_namechecker:
+    filename_pattern: "^.*-asset-.*$"
+  dir_filecountchecker:
+    max_file_count: 3
