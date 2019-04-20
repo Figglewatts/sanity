@@ -9,3 +9,4 @@ parameters:
     filename_pattern: "^.*-asset-.*$"
   dir_filecountchecker:
     max_file_count: 3
+recursive: true

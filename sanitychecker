@@ -45,4 +45,4 @@ if __name__ == "__main__":
     except sanity.ContextCreationError as exc:
         exit_app(1, f"ERROR: Unable to create context, {str(exc)}")
 
-    sanity.check(sanity_ctx)
+    sanity.check(sanity_ctx, args.directory)

@@ -32,12 +32,14 @@ class Config:
             names of checkers to values to pass into their checker function.
         directory_checks (arr[str]): An array of checker name regexes to run on
             the entire directory as opposed to individual files.
+        recursive (bool): Whether or not to recurse to subdirs when checking sanity.
     """
     def __init__(self, config_yaml):
         self.checker_dir = config_yaml["checker_dir"]
         self.file_associations = config_yaml.get("file_checker_associations", DEFAULT_ASSOCIATION)
         self.checker_params = config_yaml.get("parameters", DEFAULT_PARAMETERS)
         self.dir_associations = config_yaml.get("directory_checks", DEFAULT_DIRECTORY_CHECKS)
+        self.recursive = config_yaml.get("recursive", False)
             
 
 class ConfigError(Exception):
