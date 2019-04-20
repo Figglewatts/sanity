@@ -1,8 +1,8 @@
 checker_dir: sanity/checkers
-file_checker_associations:
+file_rules:
   ^.*\.txt$:
     - "^file_.*$"
-directory_checks:
+directory_rules:
   - "^dir_.*$"
 parameters:
   file_namechecker:

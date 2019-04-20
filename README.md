@@ -28,28 +28,28 @@ Each entry here provides the name of the config value, whether or not it is requ
 ```yaml
 checker_dir: "~/sanity_checks" 
 ```
-### `file_checker_associations`
+### `file_rules`
 **(OPTIONAL)** Regexes of filenames and an array of checker names to run against them. Checker names can be regexes. If this is not specified, every checker will run against every file in `checker_dir`. The example shown here will process every `.txt` file in the given directory with checkers starting with the string `"file_"`. It can be useful to separate out file and directory checkers with prefixes like this, as running file checkers on directories and vice-versa can sometimes have erroneous results.
 ```yaml
-file_checker_associations:
+file_rules:
     ^.*\.txt$:
         - "^file_.*$"
 ```
 The default value for this config processes all files with all checkers, and is equivalent to:
 ```yaml
-file_checker_associations:
+file_rules:
     ^.*$:
         - "^.*$"
 ```
-### `directory_checks`
+### `directory_rules`
 **(OPTIONAL)** Provides a list of checker name regexes to run on the specified directory as opposed to individual files in a directory. This can be useful, as some sanity checks need to be performed on a directory - for example counting the number of files present. The following example would run all checkers prefixes with the string `"dir_"` against the directory. It can be useful to separate out file and directory checkers with prefixes like this, as running file checkers on directories and vice-versa can sometimes have erroneous results.
 ```yaml
-directory_checks:
+directory_rules:
     - "^dir_.*$"
 ```
 If this value isn't present then no checks will be run on the directory. It's equivalent to setting this in the config:
 ```yaml
-directory_checks: []
+directory_rules: []
 ```
 ### `parameters`
 **(OPTIONAL)** Checkers can use parameterised using this value in the config. It maps variable names to values. The example shown here will set the `filename_pattern` parameter of checker '`filenamechecker.py`' to be equal to `"^.*-asset-.*$"`, indicating that it should only accept filenames that contain the string `"-asset-"`.
@@ -73,6 +73,9 @@ If not specified, `recursive` defaults to `false`.
 ## Writing a checker
 TODO(sam): this section.
 
+## Security concerns
+**NEVER** put untrusted code in the `checker_dir` directory. Python modules in there can be executed irregardless of what the code does. There are no attempts at sandboxing the way these modules are executed, and theoretically they could perform any number of malicious actions on the host machine.
+
 ## Todo
 - Create an alternate config to demo utility of other configs
 - Check regex filename
@@ -92,3 +95,4 @@ TODO(sam): this section.
     - Texture dimensions
 - Write documentation for everything
 - Update the README to be a guide how to use
+- Make a setup.py

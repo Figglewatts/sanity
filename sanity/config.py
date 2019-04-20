@@ -1,20 +1,29 @@
+"""Defines the Config class, as well as functions related parsing and
+validating a YAML config file.
+
+Author:
+    Sam Gibson <samolivergibson@gmail.com>
+"""
+
 import yaml
-import sanity.associations
+import sanity.rules
 
 REQUIRED_KEYS = [
     "checker_dir"
 ]
+"""str: The keys in the YAML config file that are required. An exception will be thrown
+when loading the config file if any of these are not present."""
 
-DEFAULT_ASSOCIATION = [
+DEFAULT_FILE_RULES = [
     {"^.*$": ["^.*$"]}
 ]
-"""Used if no associations are given. Runs all checkers for all files."""
+"""list[dict[str, list[str]]]: Used if no rules are given. Runs all checkers for all files."""
 
 DEFAULT_PARAMETERS = {}
-"""Used if no parameters are given. Doesn't set anything."""
+"""dict[str, value]: Used if no parameters are given. Doesn't set anything."""
 
-DEFAULT_DIRECTORY_CHECKS = []
-"""Used if no checks are given. Doesn't run any checks on the directory."""
+DEFAULT_DIRECTORY_RULES = []
+"""list[str]: Used if no checks are given. Doesn't run any checks on the directory."""
 
 class Config:
     """Config stores parsed values from the config YAML file.
@@ -24,25 +33,29 @@ class Config:
 
     Attributes:
         checker_dir (str): The directory of checker modules to use.
-        file_associations (arr[dict[str, arr[str]]]): Associations between filenames
+        file_rules (list[dict[str, list[str]]]): Rules concerning filenames
             and checkers to run against them. An array of dicts mapping filenames to
             names of checkers to run against this filename. Supports regexes for
             both filenames and checker names, simply enclose regex in '^' and '$'.
         checker_params (dict): Allows variables in checkers to be set. Maps
             names of checkers to values to pass into their checker function.
-        directory_checks (arr[str]): An array of checker name regexes to run on
+        directory_rules (list[str]): An array of checker name regexes to run on
             the entire directory as opposed to individual files.
         recursive (bool): Whether or not to recurse to subdirs when checking sanity.
     """
     def __init__(self, config_yaml):
         self.checker_dir = config_yaml["checker_dir"]
-        self.file_associations = config_yaml.get("file_checker_associations", DEFAULT_ASSOCIATION)
+        self.file_rules = config_yaml.get("file_rules", DEFAULT_FILE_RULES)
         self.checker_params = config_yaml.get("parameters", DEFAULT_PARAMETERS)
-        self.dir_associations = config_yaml.get("directory_checks", DEFAULT_DIRECTORY_CHECKS)
+        self.dir_rules = config_yaml.get("directory_rules", DEFAULT_DIRECTORY_RULES)
         self.recursive = config_yaml.get("recursive", False)
             
 
 class ConfigError(Exception):
+    """ConfigError is raised when there is some error when loading a config file.
+
+    It contains (config_err) the error that caused the ConfigError to be raised.
+    """
     def __init__(self, message, config_err=None):
         self.message = message
         self.config_err = config_err

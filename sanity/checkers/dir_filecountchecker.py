@@ -1,3 +1,5 @@
+"""Check to see if the file count of a directory exceeds a certain value."""
+
 from os import listdir
 from os.path import isfile, join
 

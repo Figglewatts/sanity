@@ -2,6 +2,19 @@
 
 """sanitychecker - Perform a number of sanity checks on a directory of assets.
 
+This is the executable portion of the sanitychecker package that can be run
+from a terminal with command line arguments.
+
+Example::
+    $ sanitychecker ./directory_containing_assets -c ./custom_config.yml
+
+For information on how to write a config file, please refer to the README.
+
+Errors:
+    * If your config file is malformed, it will not load.
+    * If the assets directory does not exist, the app will not run.
+    * If the rules in your config file are malformed, a context won't be created.
+
 Author:
     Sam Gibson <samolivergibson@gmail.com>
 """
@@ -9,16 +22,20 @@ Author:
 import argparse
 from os.path import exists
 
+import sanity
 import sanity.config
-import sanity.module
 
 DESCRIPTION = "Perform a number of quick sanity checks on a directory of assets"
+"""str: This is the description that gets printed when help text is displayed."""
 
 def exit_app(code, msg=""):
+    """Exit the application with an exit code, printing a message."""
     print(msg)
     raise SystemExit(code)
 
-if __name__ == "__main__":
+def main():
+    """The main method of the app."""
+    # first, parse command line arguments
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument("directory", type=str,
                         help="The directory of assets to check.")
@@ -45,4 +62,8 @@ if __name__ == "__main__":
     except sanity.ContextCreationError as exc:
         exit_app(1, f"ERROR: Unable to create context, {str(exc)}")
 
+    # finally, perform a sanity check on the specified directory
     sanity.check(sanity_ctx, args.directory)
+
+if __name__ == "__main__":
+    main()

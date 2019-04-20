@@ -1,3 +1,5 @@
+"""Check to see if a filename matches a given regex."""
+
 import re
 
 DEFAULT_FILENAME_PATTERN = "^.*$"
