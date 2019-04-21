@@ -1,4 +1,8 @@
-"""Check to see if a filename matches a given regex."""
+"""Check to see if a filename matches a given regex.
+
+Parameters:
+    filename_pattern (str): A regex that the filename should match.
+"""
 
 import re
 

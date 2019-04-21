@@ -1,0 +1,8 @@
+checker_dir: extended_checkers
+file_rules:
+  ^.*\.obj$:
+    - "file_vertexcountchecker"
+parameters:
+  file_vertexcountchecker:
+    min_verts: 50
+    max_verts: 5000

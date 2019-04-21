@@ -7,7 +7,7 @@ I'd recommend using [virtualenv](https://virtualenv.pypa.io/en/latest/) to insta
 2. `$ ./sanitychecker -h`
 3. You're good to go! Try out some of the stuff in the usage section, and play around with making a YAML config file outlined in the config section.
 
-## Dependencies
+## Core dependencies
 - Python 3.7
 - [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation)
     - `pip install pyyaml`
@@ -16,9 +16,23 @@ I'd recommend using [virtualenv](https://virtualenv.pypa.io/en/latest/) to insta
     - `pip install colorama`
     - Used for making the output look pretty!
 
+## Checker dependencies
+- [PyWavefront](https://github.com/pywavefront/PyWavefront)
+    - `pip install pywavefront`
+    - Used for OBJ file checker
+
 ## Usage:
+### General usage
 ```bash
 $ python sanitychecker [-c CONFIG] directory
+```
+### Basic demo
+```bash
+$ python sanitychecker ./basic_demo
+```
+### More advanced demo
+```bash
+$ python sanitychecker -c extended_checkers.yml ./advanced_demo
 ```
 
 ## Config
@@ -78,12 +92,6 @@ TODO(sam): this section.
 
 ## Todo
 - Create an alternate config to demo utility of other configs
-- Check regex filename
-- Check regex directory name
-- Check if directory is empty (dir)
-- Check if directory has certain file count (dir)
-- Check if files in directory are certain size
-- Check if files exist
 - Create advanced checkers, like an OBJ loader or something... (vertex count?)
     - JSON checker (JSON schema?)
     - YAML checker
@@ -96,3 +104,7 @@ TODO(sam): this section.
 - Write documentation for everything
 - Update the README to be a guide how to use
 - Make a setup.py
+
+## Future work
+- Different parameters could be used for checkers based on which file/directory rule is currently in use?
+- Load checkers from a list of different directories.

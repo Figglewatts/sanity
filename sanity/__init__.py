@@ -5,7 +5,7 @@ on a directory of files based on rules specified in a config file.
 
 The modules loaded should define a function with the following signature::
     def check(path, params):
-        pass
+
 The check() function should return a 2-tuple containing:
     * A bool indicating whether or not the check was a success.
     * The reason for failure if the check failed, otherwise an empty string if
@@ -183,9 +183,9 @@ def check_on_directory(context, directory):
     print_depth(f"Performing sanity checks in directory: {directory}")
 
     # run the directory checks
+    directory_check_result = True
     if len(context.dir_rules) > 0:
         print_depth(f"Processing checks for directory: {directory}", 1)
-        directory_check_result = True
         # for all of the given directory checker regexes, process them
         for dir_check_regex in context.dir_rules:
             success = process_checker(directory, dir_check_regex, context.checkers, context.checker_params)
@@ -198,7 +198,7 @@ def check_on_directory(context, directory):
             print_depth(f"{Fore.RED}Directory checks FAILED on {directory}.{Style.RESET_ALL}", 1)
 
     # get the asset files we want to check
-    files_in_dir = [f for f in listdir(directory) if isfile(join(directory, f))]
+    files_in_dir = [join(directory, f) for f in listdir(directory) if isfile(join(directory, f))]
     
     # for all of the given file rules, run the associated checks
     file_check_result = True

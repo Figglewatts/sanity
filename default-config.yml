@@ -9,4 +9,7 @@ parameters:
     filename_pattern: "^.*-asset-.*$"
   dir_filecountchecker:
     max_file_count: 3
+  dir_hasfilechecker:
+    files_list:
+      - "test.t"
 recursive: true
