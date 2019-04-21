@@ -85,25 +85,18 @@ recursive: true
 If not specified, `recursive` defaults to `false`.
 
 ## Writing a checker
-TODO(sam): this section.
+Making a checker is easy - just create a Python module with this function in it:
+```python
+def check(path, params):
+```
+Make sure it's in the folder that gets loaded when running `sanitychecker` (`checker_dir` in your config YAML file), and this checker can be called from `sanitychecker`.
+
+It should return a 2-tuple of type `(bool, str)`, indicating True for success, False for fail, and the string contains a reason for failure. For example, if a filename was not equal to some value, you'd return `False, "file name 'name' did not equal 'desired_value'`.
+
+For some example of checkers, please see the `./sanity/checkers` directory.
 
 ## Security concerns
 **NEVER** put untrusted code in the `checker_dir` directory. Python modules in there can be executed irregardless of what the code does. There are no attempts at sandboxing the way these modules are executed, and theoretically they could perform any number of malicious actions on the host machine.
-
-## Todo
-- Create an alternate config to demo utility of other configs
-- Create advanced checkers, like an OBJ loader or something... (vertex count?)
-    - JSON checker (JSON schema?)
-    - YAML checker
-    - XML checker
-    - PE, ELF, Mach-O?
-    - Markdown
-    - GLSL/HLSL
-    - Pylint
-    - Texture dimensions
-- Write documentation for everything
-- Update the README to be a guide how to use
-- Make a setup.py
 
 ## Future work
 - Different parameters could be used for checkers based on which file/directory rule is currently in use?
