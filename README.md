@@ -95,6 +95,8 @@ It should return a 2-tuple of type `(bool, str)`, indicating True for success, F
 
 For some example of checkers, please see the `./sanity/checkers` directory.
 
+You can do almost anything with a checker. You can import other python modules/packages (as long as you don't do a relative import), and you can even call other checkers `check()` functions, which could be useful for creating some logic related to checkers being called based on the results of other checkers.
+
 ## Security concerns
 **NEVER** put untrusted code in the `checker_dir` directory. Python modules in there can be executed irregardless of what the code does. There are no attempts at sandboxing the way these modules are executed, and theoretically they could perform any number of malicious actions on the host machine.
 

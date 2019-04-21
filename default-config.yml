@@ -1,15 +1,18 @@
 checker_dir: sanity/checkers
 file_rules:
-  ^.*\.txt$:
+  ^.*$:
     - "^file_.*$"
 directory_rules:
   - "^dir_.*$"
 parameters:
   file_namechecker:
     filename_pattern: "^.*-asset-.*$"
+  file_sizechecker:
+    min_size: 1
   dir_filecountchecker:
     max_file_count: 3
   dir_hasfilechecker:
     files_list:
       - "test.t"
+      - "test.png"
 recursive: true
