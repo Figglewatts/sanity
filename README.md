@@ -1,5 +1,5 @@
 # sanity
-A Python module to check the 'sanity' of assets at stages in a pipeline.
+A Python module to check the 'sanity' of assets at stages in a pipeline. Originally made for a job I applied for a while back.
 
 ## Quick start
 I'd recommend using [virtualenv](https://virtualenv.pypa.io/en/latest/) to install dependencies so you don't pollute your site-packages folder. It's what I used during development.
